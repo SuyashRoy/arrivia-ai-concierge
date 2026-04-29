@@ -202,6 +202,13 @@ Look at the response body's metadata:
 - If it's our bug: fix, add a regression test, deploy.
 - If it's partner config data: escalate to partner config team. Do NOT modify partner config ourselves (Constraint 2).
 
+### Part B2 — Required Reasoning Question
+
+**There are two distinct scenarios which come to mind:**
+- **Scenario 1:** the AI generated a rule enforcer that applied booking type exclusions using a case-sensitive comparison ("Cruise" !== "cruise"), which looks correct in the code but fails when the partner configuration uses lowercase and the inventory uses title case.
+- **Scenario 2:**The AI placed the partner rule filtering *before* the scoring step instead of *after*, meaning the scoring weights shift because the input pool changed, the scores look different but the code "works" without errors.
+- **Catching these instances:** Manual testing with specific edge case data by writing a targeted test that asserts zero cruises for a cruise-exclusion partner. If the pipeline failed for any of the aforemnetioned tests, then I would review the appliedRules metadata to verify rules actually fired.
+
 ---
 
 ## Section C — AI Usage Log
